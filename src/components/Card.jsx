@@ -1,26 +1,29 @@
-import React, {useState} from 'react'
-import { useNavigate } from 'react-router-dom';
-import video from "../assets/video.mp4"
-import styled from 'styled-components'
-import {IoPlayCircleSharp} from "react-icons/io5"
-import {RiThumbUpFill, RiThumbDownFill} from "react-icons/ri"
-import {BsCheck} from "react-icons/bs"
-import {AiOutlinePlus} from "react-icons/ai"
-import {BiChevronDown} from "react-icons/bi"
-import axios from 'axios';
-import { firebaseAuth } from '../utils/firebase-config';
-import { onAuthStateChanged } from 'firebase/auth';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { IoPlayCircleSharp } from "react-icons/io5";
+import { AiOutlinePlus } from "react-icons/ai";
+import { RiThumbUpFill, RiThumbDownFill } from "react-icons/ri";
+import { BiChevronDown } from "react-icons/bi";
+import { BsCheck } from "react-icons/bs";
+import axios from "axios";
+import { onAuthStateChanged } from "firebase/auth";
+import { firebaseAuth } from "../utils/firebase-config";
+import { useDispatch } from "react-redux";
+import { removeMovieFromLiked } from "../store";
+import video from "../assets/video.mp4";
 
-export default React.memo(function Card({ movieData, isLiked = false }) {
-
+export default React.memo(function Card({ index, movieData, isLiked = false }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
   const [email, setEmail] = useState(undefined);
-  const navigate = useNavigate();
 
   onAuthStateChanged(firebaseAuth, (currentUser) => {
-    if(currentUser) setEmail(currentUser, email);
-      else navigate("/login");
-});
+    if (currentUser) {
+      setEmail(currentUser.email);
+    } else navigate("/login");
+  });
 
   const addToList = async () => {
     try {
@@ -36,43 +39,56 @@ export default React.memo(function Card({ movieData, isLiked = false }) {
   return (
     <Container
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}>
-      {/* images for 60 movies */}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <img
         src={`https://image.tmdb.org/t/p/w500${movieData.image}`}
-        alt="movie" />
+        alt="card"
+        onClick={() => navigate("/player")}
+      />
+
       {isHovered && (
         <div className="hover">
-          <div className='image-video-container'>
+          <div className="image-video-container">
             <img
               src={`https://image.tmdb.org/t/p/w500${movieData.image}`}
-              alt="movie"
-              onClick={() => navigate("/player")} />
+              alt="card"
+              onClick={() => navigate("/player")}
+            />
             <video
               src={video}
               autoPlay={true}
               loop
               muted
-              onClick={() => navigate("/player")} />
+              onClick={() => navigate("/player")}
+            />
           </div>
-          <div className='info-container flex column'>
-            <h3 className='name' onClick={() => navigate("/player")}>
+          <div className="info-container flex column">
+            <h3 className="name" onClick={() => navigate("/player")}>
               {movieData.name}
             </h3>
-            <div className='icons flex j-between'>
-              <div className='controls flex'>
+            <div className="icons flex j-between">
+              <div className="controls flex">
                 <IoPlayCircleSharp
-                  title="play"
-                  onClick={() => navigate("/player")} />
+                  title="Play"
+                  onClick={() => navigate("/player")}
+                />
                 <RiThumbUpFill title="Like" />
                 <RiThumbDownFill title="Dislike" />
                 {isLiked ? (
-                  <BsCheck title="Remove From List" />
+                  <BsCheck
+                    title="Remove from List"
+                    onClick={() =>
+                      dispatch(
+                        removeMovieFromLiked({ movieId: movieData.id, email })
+                      )
+                    }
+                  />
                 ) : (
                   <AiOutlinePlus title="Add to my list" onClick={addToList} />
                 )}
               </div>
-              <div className='info'>
+              <div className="info">
                 <BiChevronDown title="More Info" />
               </div>
             </div>
@@ -85,7 +101,6 @@ export default React.memo(function Card({ movieData, isLiked = false }) {
             </div>
           </div>
         </div>
-
       )}
     </Container>
   );
