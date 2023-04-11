@@ -57,6 +57,18 @@ const getRawData = async (api, genres, paging = false) => {
     return moviesArray;
   };
 
+  export const fetchDataByGenre = createAsyncThunk(
+    "netflix/genre",
+    async ({ genre, type }, thunkAPI) => {
+      const {
+        netflix: { genres },
+      } = thunkAPI.getState();
+      return getRawData(
+        `${TMDB_BASE_URL}/discover/${type}?api_key=${API_KEY}&with_genres=${genre}`,
+        genres
+      );
+    }
+  );
   
   export const fetchMovies = createAsyncThunk(
     "netflix/trending",
@@ -73,17 +85,26 @@ const getRawData = async (api, genres, paging = false) => {
 );
 
 const NetflixSlice = createSlice({
-    name: "Neflix",
-    initialState,
-    extraReducers: (builder) => {
-        builder.addCase(getGenres.fulfilled,(state, action)=> {
-            state.genres = action.payload;
-            state.genresLoaded = true;
-        });
-        builder.addCase(fetchMovies.fulfilled,(state, action)=> {
-            state.movies = action.payload;
-        });
-    },
+  name: "Netflix",
+  initialState,
+  extraReducers: (builder) => {
+    builder.addCase(getGenres.fulfilled, (state, action) => {
+      state.genres = action.payload;
+      state.genresLoaded = true;
+    });
+    builder.addCase(fetchMovies.fulfilled, (state, action) => {
+      state.movies = action.payload;
+    });
+    builder.addCase(fetchDataByGenre.fulfilled, (state, action) => {
+      state.movies = action.payload;
+    });
+    // builder.addCase(getUsersLikedMovies.fulfilled, (state, action) => {
+    //   state.movies = action.payload;
+    // });
+    // builder.addCase(removeMovieFromLiked.fulfilled, (state, action) => {
+    //   state.movies = action.payload;
+    // });
+  },
 });
 
 export const store = configureStore({

@@ -34,7 +34,6 @@ export default function Netflix() {
         return() => (window.onscroll = null);
     }
 
-    console.log(movies);
 
   return (
     <Container>
