@@ -1,5 +1,15 @@
 # Netflix Clone
 
+## Tech:
+- React
+- Redux Toolkit
+- Firebase
+- Styled Compenents
+- Axios
+- Node.js
+- Express
+- MongoDB
+
 ## To Start the App:
 - Install React Dependencies
 - Instal Node Dependencies
