@@ -3,6 +3,8 @@ const cors = require("cors");
 const userRoutes = require("./routes/UserRoutes");
 const mongoose = require("mongoose");
 
+const PORT = process.env.PORT || 5000;
+
 const app = express();
 
 app.use(cors());
@@ -22,19 +24,15 @@ mongoose
 
 app.use("/api/user", userRoutes);
 
-
 let port = process.env.PORT;
 if (port == null || port == "") {
-  port == 5000;
+  port == 3000;
 }
 
 app.listen(port, function() {
   console.log("Server has started successfully");
 });
 
-
 // app.listen(5000, () => {
 //   console.log("server started on port 5000");
 // });
-
-// mongodb+srv://drahhal98:<password>@cluster1.6wpchyu.mongodb.net/?retryWrites=true&w=majority
