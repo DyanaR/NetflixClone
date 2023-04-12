@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 mongoose
-  .connect("mongodb://0.0.0.0:27017/netflix", {
+  .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -22,6 +22,19 @@ mongoose
 
 app.use("/api/user", userRoutes);
 
-app.listen(5000, () => {
-  console.log("server started on port 5000");
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port == 5000;
+}
+
+app.listen(port, function() {
+  console.log("Server has started successfully");
 });
+
+
+// app.listen(5000, () => {
+//   console.log("server started on port 5000");
+// });
+
+// mongodb+srv://drahhal98:<password>@cluster1.6wpchyu.mongodb.net/?retryWrites=true&w=majority
