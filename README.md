@@ -1,4 +1,5 @@
 # Netflix Clone
+[![screenshot](NetflixCloneVid.gif)]
 
 ## Tech:
 - React
